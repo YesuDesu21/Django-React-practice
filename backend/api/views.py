@@ -7,11 +7,7 @@ from .models import Note
 
 # Create your views here.
 #generic view built from django for creating new object
-class CreateUserView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer #tells view what kind of data to accept to make a new user
-    permission_classes = [AllowAny]
-    
+#this is like the "controller" in django that handles requests
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
     permission_classes = [IsAuthenticated]
@@ -24,8 +20,19 @@ class NoteListCreate(generics.ListCreateAPIView):
         if serializer.is_valid():
             serializer.save(author=self.request.user)
         else:
-            print(serializer.error)
+            print(serializer.errors)
     
-class NoteDelete()
-
+class NoteDelete(generics.DestroyAPIView):
+    serializer_class = NoteSerializer
+    permission_classes = [IsAuthenticated]  
+    
+    #only delete notes that are your own
+    def get_queryset(self):
+        user = self.request.user
+        return Note.objects.filter(author=user)
+    
+class CreateUserView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer #tells view what kind of data to accept to make a new user
+    permission_classes = [AllowAny]
 

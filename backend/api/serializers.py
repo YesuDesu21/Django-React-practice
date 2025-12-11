@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Note
 #ORM maps python objects to the corresponding code to make a change to db
+#this is like a form system that converts data into python datatype instead of passing http requests/response
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
